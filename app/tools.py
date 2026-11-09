@@ -7,6 +7,7 @@
 import json
 from functools import cache
 from pathlib import Path
+from datetime import datetime
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 MAX_RESULTS = 3
@@ -77,3 +78,55 @@ def get_lecture_summary(lecture: int) -> str:
         available = sorted(p.stem for p in (DATA_DIR / "lectures").glob("*.md"))
         return f"第{lecture}回の要点はまだありません。用意されている回: {', '.join(available)}"
     return path.read_text(encoding="utf-8")
+
+
+
+import random
+import json
+
+def make_quiz(lecture: int) -> str:
+    """指定された講義回の復習クイズを作るときに使うツール。
+    用語集から指定回の用語をランダムに選び、
+    問題と答えをJSON形式で返す。
+    """
+
+    glossary = load_glossary()
+
+    # 指定された講義回の用語だけを抽出
+    terms = [
+        term for term in glossary
+        if term["lecture"] == lecture
+    ]
+
+    # 用語が見つからない場合
+    if not terms:
+        return json.dumps({
+            "error": f"第{lecture}回の用語がありません"
+        }, ensure_ascii=False)
+
+    # ランダムに1つ選択
+    selected = random.choice(terms)
+
+    # クイズを作成
+    quiz = {
+        "question": f"「{selected['term']}」の意味は？",
+        "answer": selected["definition"]
+    }
+
+    return json.dumps(quiz, ensure_ascii=False)
+
+
+
+def save_learning_log(content):
+    log_dir = Path("learning_logs")
+    log_dir.mkdir(parents=True, exist_ok=True)
+
+    file_path = log_dir / "learning_log.md"
+    date = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    with file_path.open("a", encoding="utf-8") as f:
+        f.write(f"日時: {date}\n\n")
+        f.write(f"{content}\n")
+
+    return f"学習ログを {file_path} に保存しました。"
+
