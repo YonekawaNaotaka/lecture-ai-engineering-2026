@@ -2,10 +2,16 @@
 
 ## 演習
 
-- 第1回（素のLLM）とエージェントの回答の違い：
+- 第1回（素のLLM）とエージェントの回答の違い：glossary.jsonを読み、単語の意味を正しく認識できている。
 - `--trace` で見えたツール呼び出し（ツール名と引数）：
-- 1つの質問での LLM 呼び出し回数（`requests`）：
-- 追加したツールと、docstring に書いた説明：
+[tool call]   search_glossary({'query': 'LoRA'})
+[tool call]   search_glossary({'query': 'QLoRA'})
+- 1つの質問での LLM 呼び出し回数（`requests`）：2
+- 追加したツールと、docstring に書いた説明：make_quizを追加した。
+"""指定された講義回の復習クイズを作るときに使うツール。
+    用語集から指定回の用語をランダムに選び、
+    問題と答えをJSON形式で返す。
+    """
 
 ## 宿題
 

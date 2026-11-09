@@ -118,6 +118,7 @@ def make_quiz(lecture: int) -> str:
 
 
 def save_learning_log(content):
+    """学習内容をmdファイルに保存するツール"""
     log_dir = Path("learning_logs")
     log_dir.mkdir(parents=True, exist_ok=True)
 
